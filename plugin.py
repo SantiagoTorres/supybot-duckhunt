@@ -323,7 +323,7 @@ class DuckHunt(callbacks.Plugin):
                 self.toptimes[currentChannel] = {}
                 self.worsttimes[currentChannel] = {}
 
-                # Init bangdelay
+                # Init befdelay
                 self.times[currentChannel] = False
 
                 # Init lastSpoke
@@ -846,25 +846,25 @@ class DuckHunt(callbacks.Plugin):
 		
 
 
-    def bang(self, irc, msg, args):
+    def bef(self, irc, msg, args):
         """
-        Shoots the duck!
+        befriends the duck!
         """
         currentChannel = msg.args[0]
 
         if irc.isChannel(currentChannel):
             if(self.started.get(currentChannel) == True):
 
-                # bangdelay: how much time between the duck was launched and this shot?
+                # befriend delay: how much time between the duck was launched and this shot?
                 if self.times[currentChannel]:
-                    bangdelay = time.time() - self.times[currentChannel]
+                    befdelay = time.time() - self.times[currentChannel]
                 else:
-                    bangdelay = False
+                    befdelay = False
 
 
                 # Is the player reloading?
                 if (self.reloading[currentChannel].get(msg.nick) and time.time() - self.reloading[currentChannel][msg.nick] < self.reloadtime[currentChannel]):
-                    irc.reply("%s, you are reloading... (Reloading takes %i seconds)" % (msg.nick, self.reloadtime[currentChannel]))
+                    irc.reply("%s, you are still hugging the previous duck :[ (befriending %i seconds)" % (msg.nick, self.reloadtime[currentChannel]))
                     return 0
                 
 
@@ -876,7 +876,7 @@ class DuckHunt(callbacks.Plugin):
 
                     # Did the player missed it?
                     if (random.random() < self.missprobability[currentChannel]):
-                        irc.reply("%s, you missed the duck!" % (msg.nick))
+                        irc.reply("%s, you can't find the duck!" % (msg.nick))
                     else:
 
                         # Adds one point for the nick that shot the duck
@@ -889,26 +889,26 @@ class DuckHunt(callbacks.Plugin):
                                 self.scores[currentChannel] = {} 
                                 self.scores[currentChannel][msg.nick] = 1
 
-                        irc.reply("\_x< %s: %i (%.2f seconds)" % (msg.nick,  self.scores[currentChannel][msg.nick], bangdelay))
+                        irc.reply(u"♥♥\_o<♥♥ %s: %i (%.2f seconds)" % (msg.nick,  self.scores[currentChannel][msg.nick], befdelay))
 
-                        self.averagetime[currentChannel] += bangdelay
+                        self.averagetime[currentChannel] += befdelay
 
-                        # Now save the bang delay for the player (if it's quicker than it's previous bangdelay)
+                        # Now save the bang delay for the player (if it's quicker than it's previous befdelay)
                         try:
                             previoustime = self.toptimes[currentChannel][msg.nick]
-                            if(bangdelay < previoustime):
-                                self.toptimes[currentChannel][msg.nick] = bangdelay
+                            if(befdelay < previoustime):
+                                self.toptimes[currentChannel][msg.nick] = befdelay
                         except:
-                            self.toptimes[currentChannel][msg.nick] = bangdelay
+                            self.toptimes[currentChannel][msg.nick] = befdelay
 
 
-                        # Now save the bang delay for the player (if it's worst than it's previous bangdelay)
+                        # Now save the bang delay for the player (if it's worst than it's previous befdelay)
                         try:
                             previoustime = self.worsttimes[currentChannel][msg.nick]
-                            if(bangdelay > previoustime):
-                                self.worsttimes[currentChannel][msg.nick] = bangdelay
+                            if(befdelay > previoustime):
+                                self.worsttimes[currentChannel][msg.nick] = befdelay
                         except:
-                            self.worsttimes[currentChannel][msg.nick] = bangdelay
+                            self.worsttimes[currentChannel][msg.nick] = befdelay
 
 
                         self.duck[currentChannel] = False
@@ -956,15 +956,15 @@ class DuckHunt(callbacks.Plugin):
 
                     # Adding additional message if kick
                     if self.registryValue('kickMode', currentChannel) and irc.nick in irc.state.channels[currentChannel].ops:
-                        message += ' You just shot yourself!'
+                        message += ' You just loved yourself (lennyface.jfif)!'
 
                     # Adding nick and score
                     message += " %s: %i" % (msg.nick, self.scores[currentChannel][msg.nick])
 
-                    # If we were able to have a bangdelay (ie: a duck was launched before someone did bang)
-                    if (bangdelay):
+                    # If we were able to have a befdelay (ie: a duck was launched before someone did bang)
+                    if (befdelay):
                         # Adding time
-                        message += " (" + str(round(bangdelay,2)) + " seconds)"
+                        message += " (" + str(round(befdelay,2)) + " seconds)"
 
                     # If kickMode is enabled for this channel, and the bot have op capability, let's kick!
                     if self.registryValue('kickMode', currentChannel) and irc.nick in irc.state.channels[currentChannel].ops:
@@ -1118,7 +1118,7 @@ class DuckHunt(callbacks.Plugin):
 
 
         else:
-            irc.reply("Not a single duck was shot during this hunt!")
+            irc.reply("Not a single duck was befriended during this hunt! :[")
 
         # Reinit current hunt scores
         if self.scores.get(currentChannel):

@@ -41,14 +41,14 @@ from imp import reload
 __version__ = ""
 
 # XXX Replace this with an appropriate author or supybot.Author instance.
-__author__ = supybot.Author('Matthias Meusburger', 'veggiematts', '')
+__author__ = supybot.Author('Santiago Torres', 'SantiagoTorres', '')
 
 # This is a dictionary mapping supybot.Author instances to lists of
 # contributions.
 __contributors__ = {}
 
 # This is a url where the most recent plugin package can be downloaded.
-__url__ = 'https://github.com/veggiematts/supybot-duckhunt' 
+__url__ = 'https://github.com/SantiagoTorres/supybot-duckhunt' 
 
 from . import config
 from . import plugin
